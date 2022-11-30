@@ -1,0 +1,40 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    MATHANG mh1 = new MATHANG();
+    if (IsPost)
+    {
+        var MaHang = Request["maMH"];
+        XL_MATHANG.XoaMatHang(MaHang);
+        Response.Redirect("MH_TimKiemMatHang.cshtml");
+    }
+    else
+    {
+        var maMh = Request["maMH"];
+        mh1 = XL_MATHANG.DocMatHang(maMh);
+    }
+ }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:brown;font-weight:bold">Xóa mặt hàng</legend>
+            <form action="~/MH_XoaMatHang.cshtml" method="post">
+                Mã mặt hàng cần xóa:
+                <input type="text" name="maMH" value="@mh1.maHang"><br />
+                <input type="submit" value="Xóa mặt hàng" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+            <form action="~/MH_TimKiemMatHang.cshtml">
+                <input type="submit" value="Trở về" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

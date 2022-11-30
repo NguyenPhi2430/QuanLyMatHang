@@ -1,0 +1,70 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    MATHANG mh2 = new MATHANG();
+    List<MATHANG> dsmh = new List<MATHANG>();
+    if (IsPost)
+    {
+
+        mh2.maHang = Request["maMH"];
+        mh2.maHang = XL_MATHANG.KiemTraHopLe(mh2.maHang);
+        mh2.tenHang = Request["tenMH"];
+        mh2.congTySX = Request["congtySX"];
+        if(Request.Form["luaChon"] == "1")
+        {
+            mh2.loaiHang = "Ô tô thế hệ 1";
+        }
+        else
+        {
+            mh2.loaiHang = "Ô tô thế hệ 2";
+        }
+        mh2.ngaySX = DateTime.Parse(Request["ngaySX"]);
+        mh2.hanDung = DateTime.Parse(Request["handung"]);
+        mh2.donGia = int.Parse(Request["dongia"]);
+        mh2.soLuongHang = int.Parse(Request["soluongMH"]);
+        XL_MATHANG.ThemMatHang(mh2);
+
+        Response.Redirect("MH_TimKiemMatHang.cshtml");
+    }
+ }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:brown;font-weight:bold">Thêm mặt hàng</legend>
+            <form action="~/MH_ThemMatHang.cshtml" method="post">
+                Mã mặt hàng:
+                <input type="text" name="maMH" style="margin-right:25px" />
+                Tên mặt hàng:
+                <input type="text" name="tenMH" /><br />
+                Công ty sản xuất:
+                <input type="text" name="congtySX" style="margin-right:4px" />
+                Loại hàng:
+                <select name="luaChon">
+                    <option value="1">Ô tô thế hệ 1</option>
+                    <option value="2">Ô tô thế hệ 2</option>
+                </select><br />
+                Năm sản xuất*:
+                <input type="datetime" name="ngaySX" placeholder="mm/dd/yyyy" required style="margin-right:23px" />
+                Hạn dùng*:
+                <input type="datetime" name="handung" placeholder="mm/dd/yyyy" required /><br />
+                Đơn giá*:
+                <input type="number" name="dongia" required style="margin-right:58px" />
+                Số lượng hàng*:
+                <input type="number" name="soluongMH" required /><br />
+                <input type="submit" value="Thêm mặt hàng" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />   
+            </form>
+            <form action="~/MH_TimKiemMatHang.cshtml">
+                <input type="submit" value="Trở về" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

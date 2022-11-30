@@ -1,0 +1,74 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    MATHANG mh2 = new MATHANG();
+    List<MATHANG> dsmh = new List<MATHANG>();
+    if (IsPost)
+    {
+
+        mh2.maHang = Request["maMH"];
+        mh2.tenHang = Request["tenMH"];
+        mh2.congTySX = Request["congtySX"];
+        if(Request.Form["luaChon"] == "1")
+        {
+            mh2.loaiHang = "Ô tô thế hệ 1";
+        }
+        else
+        {
+            mh2.loaiHang = "Ô tô thế hệ 2";
+        }
+        mh2.ngaySX = DateTime.Parse(Request["ngaySX"]);
+        mh2.hanDung = DateTime.Parse(Request["handung"]);
+        mh2.donGia = int.Parse(Request["dongia"]);
+        mh2.soLuongHang = int.Parse(Request["soluongMH"]);
+        XL_MATHANG.SuaMatHang(mh2);
+
+        Response.Redirect("MH_TimKiemMatHang.cshtml");
+    }
+    else
+    {
+        var maMh = Request["maMH"];
+        mh2 = XL_MATHANG.DocMatHang(maMh);
+    }
+ }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:brown;font-weight:bold">Cập nhật mặt hàng</legend>
+            <form action="~/MH_CapNhatMatHang.cshtml" method="post">
+                Mã mặt hàng:
+                <input type="text" name="maMH" value="@mh2.maHang" readonly="readonly" style="margin-right:25px" />
+                Tên mặt hàng:
+                <input type="text" name="tenMH" value="@mh2.tenHang" /><br />
+                Công ty sản xuất:
+                <input type="text" name="congtySX" value="@mh2.congTySX" style="margin-right:4px" />
+                Loại hàng:
+                <select name="luaChon">
+                    <option value="1">Ô tô thế hệ 1</option>
+                    <option value="2">Ô tô thế hệ 2</option>
+                </select><br />
+                <span style="font-weight:bold">Năm sản xuất*:</span>
+                <input type="datetime" name="ngaySX" placeholder="mm/dd/yyyy" value="@mh2.ngaySX" required style="margin-right:23px" />
+                <span style="font-weight:bold">Hạn dùng*:</span>
+                <input type="datetime" name="handung" placeholder="mm/dd/yyyy" value="@mh2.hanDung" required /><br />
+                <span style="font-weight:bold">Đơn giá*:</span>
+                <input type="number" name="dongia" value="@mh2.donGia" required style="margin-right:58px" />
+                <span style="font-weight:bold">Số lượng hàng*:</span>
+                <input type="number" name="soluongMH" value="@mh2.soLuongHang" required /><br />
+                <input type="submit" value="Cập nhật" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+            <form action="~/MH_TimKiemMatHang.cshtml">
+                <input type="submit" value="Trở về" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

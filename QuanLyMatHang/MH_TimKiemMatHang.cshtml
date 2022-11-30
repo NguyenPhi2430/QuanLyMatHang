@@ -1,0 +1,213 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    List<MATHANG> DsMH = null;
+    var tukhoa = Request["tuKhoa"];
+    DateTime? namBatDau = null;
+    DateTime? namKetThuc = null;
+    DateTime? hanDungBatDau = null;
+    DateTime? hanDungKetThuc = null;
+    string thongke1 = string.Empty;
+    string thongke2 = string.Empty;
+    string thongkehandung = string.Empty;
+    string namBatDauHTML = string.Empty;
+    string namKetThucHTML = string.Empty;
+    string handungBatDauHTML = string.Empty;
+    string hanDungKetThucHTML = string.Empty;
+    if (IsPost)
+    {
+        if (Request.Form["Search"] == "tatca")
+        {
+            DsMH = XL_MATHANG.TimKiemMatHangBangTatCa(tukhoa);
+        }
+        if (Request.Form["Search"] == "mahang")
+        {
+            DsMH = XL_MATHANG.TimKiemMatHangBangMaHang(tukhoa);
+        }
+        if (Request.Form["Search"] == "tenhang")
+        {
+            DsMH = XL_MATHANG.TimKiemMatHangBangTenHang(tukhoa);
+        }
+        if (Request.Form["Search"] == "congtySX")
+        {
+            DsMH = XL_MATHANG.TimKiemMatHangBangCongTySX(tukhoa);
+        }
+        if (Request.Form["Search"] == "loaihang")
+        {
+            DsMH = XL_MATHANG.TimKiemMatHangBangLoaiHang(tukhoa);
+        }
+
+        if (!String.IsNullOrEmpty(Request["namSXBD"]) && !String.IsNullOrEmpty(Request["namSXKT"]))
+        {
+            string namBD = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXBD"]);
+            string namKT = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXKT"]);
+            namBatDau = XL_DATETIMEFORMAT.FormatStringToDateTime(namBD);
+            DateTime nBDHTML = (DateTime)namBatDau;
+            namBatDauHTML = nBDHTML.ToString("MM/dd/yyyy");
+            namKetThuc = XL_DATETIMEFORMAT.FormatStringToDateTime(namKT);
+            DateTime nKTHTML = (DateTime)namKetThuc;
+            namKetThucHTML = nKTHTML.ToString("MM/dd/yyyy");
+            DsMH = XL_MATHANG.TimKiemMatHangBangNgaySX(namBatDau, namKetThuc, DsMH);
+        }
+
+        if (!String.IsNullOrEmpty(Request["handungBD"]) && !String.IsNullOrEmpty(Request["handungKT"]))
+        {
+            string handungBD = XL_DATETIMEFORMAT.ThemThoiGian(Request["handungBD"]);
+            string handungKT = XL_DATETIMEFORMAT.ThemThoiGian(Request["handungKT"]);
+            hanDungBatDau = XL_DATETIMEFORMAT.FormatStringToDateTime(handungBD);
+            DateTime nBDHTML = (DateTime)hanDungBatDau;
+            handungBatDauHTML = nBDHTML.ToString("MM/dd/yyyy");
+            hanDungKetThuc = XL_DATETIMEFORMAT.FormatStringToDateTime(handungKT);
+            DateTime nKTHTML = (DateTime)hanDungKetThuc;
+            hanDungKetThucHTML = nKTHTML.ToString("MM/dd/yyyy");
+            DsMH = XL_MATHANG.TimKiemMatHangBangHanDung(hanDungBatDau, hanDungKetThuc, DsMH);
+        }
+
+        if (!String.IsNullOrEmpty(Request["namSXBD"]) && !String.IsNullOrEmpty(Request["namSXBD"]) && !String.IsNullOrEmpty(Request["handungBD"]) && !String.IsNullOrEmpty(Request["handungKT"]))
+        {
+            string namBD = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXBD"]);
+            string namKT = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXKT"]);
+            namBatDau = XL_DATETIMEFORMAT.FormatStringToDateTime(namBD);
+            DateTime nBDHTML = (DateTime)namBatDau;
+            namBatDauHTML = nBDHTML.ToString("MM/dd/yyyy");
+            namKetThuc = XL_DATETIMEFORMAT.FormatStringToDateTime(namKT);
+            DateTime nKTHTML = (DateTime)namKetThuc;
+            namKetThucHTML = nKTHTML.ToString("MM/dd/yyyy");
+            DsMH = XL_MATHANG.TimKiemMatHangBangNgaySX(namBatDau, namKetThuc, DsMH);
+            string handungBD = XL_DATETIMEFORMAT.ThemThoiGian(Request["handungBD"]);
+            string handungKT = XL_DATETIMEFORMAT.ThemThoiGian(Request["handungKT"]);
+            hanDungBatDau = XL_DATETIMEFORMAT.FormatStringToDateTime(handungBD);
+            DateTime hdBDHTML = (DateTime)hanDungBatDau;
+            handungBatDauHTML = hdBDHTML.ToString("MM/dd/yyyy");
+            hanDungKetThuc = XL_DATETIMEFORMAT.FormatStringToDateTime(handungKT);
+            DateTime hdTHTML = (DateTime)hanDungKetThuc;
+            hanDungKetThucHTML = hdTHTML.ToString("MM/dd/yyyy");
+            DsMH = XL_MATHANG.TimKiemMatHangBangHanDung(hanDungBatDau, hanDungKetThuc, DsMH);
+        }
+
+        if (Request.Form["TheHe"] == "theHe1")
+        {
+            string theHe = "Ô tô thế hệ 1";
+            var soLuongHangThongKe = XL_MATHANG.ThongKeMatHang(DsMH, theHe);
+            thongke1 = "Thống kê số lượng hàng theo loại hàng [Ô tô thế hệ 1] là " + soLuongHangThongKe;
+        }
+
+        if (Request.Form["TheHe"] == "theHe2")
+        {
+            string theHe2 = "Ô tô thế hệ 2";
+            var soLuongHangThongKe2 = XL_MATHANG.ThongKeMatHang(DsMH, theHe2);
+            thongke2 = "Thống kê số lượng hàng theo loại hàng [Ô tô thế hệ 2] là " + soLuongHangThongKe2;
+        }
+        if (Request.Form["TheHe"] == "TatCaTheHe")
+        {
+            string theHe = "Ô tô thế hệ 1";
+            var soLuongHangThongKe = XL_MATHANG.ThongKeMatHang(DsMH, theHe);
+            thongke1 = "Thống kê số lượng hàng theo loại hàng [Ô tô thế hệ 1] là " + soLuongHangThongKe;
+            string theHe2 = "Ô tô thế hệ 2";
+            var soLuongHangThongKe2 = XL_MATHANG.ThongKeMatHang(DsMH, theHe2);
+            thongke2 = "Thống kê số lượng hàng theo loại hàng [Ô tô thế hệ 2] là " + soLuongHangThongKe2;
+        }
+        if (Request.Form["TKHanDung"] == "thongke")
+        {
+            int soLuongHangThongKe3 = XL_MATHANG.ThongKeHanDung(DsMH);
+            thongkehandung = "Thống kê số lượng đã hết hạn sử dụng là " + soLuongHangThongKe3;
+        }
+    }
+    }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    FILEPATH = C:\\Users\\admin\\source\\repos\\QuanLyMatHang\\mathang.txt
+    <h1 style="text-align:center">Quản lý mặt hàng</h1>
+    <div style="text-align:center"><span style="color:red">>>>>> </span><a href="~/MH_TimKiemHoaDon.cshtml">Quản lý hóa đơn</a></div>
+    <div>
+        <fieldset>
+            <legend style="color:brown;font-weight:bold">Tìm kiếm mặt hàng</legend>
+            <form action="~/MH_TimKiemMatHang.cshtml" method="post">
+                Tìm kiếm theo:
+                <select name="Search">
+                    <option value="tatca">Tất cả</option>
+                    <option value="mahang">Mã mặt hàng</option>
+                    <option value="tenhang">Tên mặt hàng</option>
+                    <option value="congtySX">Công ty sản xuất</option>
+                    <option value="loaihang">Loại mặt hàng</option>
+                </select><br />
+                Từ khóa:
+                <input type="text" name="tuKhoa" value="@tukhoa" /><br />
+                Tìm kiếm theo năm sản xuất:
+                <input type="text" name="namSXBD" placeholder="Từ ngày" value="@namBatDauHTML" />
+                <input type="text" name="namSXKT" placeholder="Đến ngày" value="@namKetThucHTML" /><br />
+                Tim kiếm theo hạn dùng:
+                <input type="text" name="handungBD" placeholder="Từ ngày" value="@handungBatDauHTML" />
+                <input type="text" name="handungKT" placeholder="Đến ngày" value="@hanDungKetThucHTML" /><br />
+                Thống kế hàng theo loại hàng:
+                <select name="TheHe">
+                    <option>Không thống kê</option>
+                    <option value="TatCaTheHe">Tất cả loại hàng</option>
+                    <option value="theHe1">Ô tô thế hệ thứ 1</option>
+                    <option value="theHe2">Ô tô thế hệ thứ 2</option>
+                </select><br />
+                Thống kế số hàng đã hết hạn sử dụng:
+                <select name="TKHanDung">
+                    <option>Không thống kê</option>
+                    <option value="thongke">Thống kê</option>
+                </select><br />
+                <input type="submit" value="Tìm kiếm" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" /><br />
+            </form><br />
+            <form action="~/MH_ThemMatHang.cshtml">
+                <input type="submit" value="Thêm mặt hàng" style="background-color:cornflowerblue;border:none;color:white;height:25px;border-radius:5px;" />
+            </form>
+        </fieldset>
+    </div>
+    <br />
+    <div>
+        <fieldset>
+            <legend style="color:brown;font-weight:bold">Danh sách mặt hàng</legend>
+            <table border="1" rules="cols" style="width:100%">
+                <tr>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Mã MH</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Tên MH</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Công ty sản xuất</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Loại hàng</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Năm sản xuất</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Hạn dùng</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Đơn giá</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Số lượng hàng</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Tổng tiền</th>
+                    <th style="background-color:cornflowerblue;color:white;padding:5px;">Tác vụ</th>
+                </tr>
+                @if (DsMH != null)
+                {
+                    foreach (var mh in DsMH)
+                    {
+                        <tr>
+                            <td style="text-align:center">@mh.maHang</td>
+                            <td style="text-align:center">@mh.tenHang</td>
+                            <td style="text-align:center">@mh.congTySX</td>
+                            <td style="text-align:center">@mh.loaiHang</td>
+                            <td style="text-align:center">@mh.ngaySX.ToShortDateString()</td>
+                            <td style="text-align:center">@mh.hanDung.ToShortDateString()</td>
+                            <td style="text-align:center">@mh.donGia USD</td>
+                            <td style="text-align:center">@mh.soLuongHang</td>
+                            <td style="text-align:center">@mh.tongGia USD</td>
+                            <td>
+                                <a href="~/MH_XoaMatHang.cshtml?maMh=@mh.maHang" style="padding-left:10px;color:red;text-decoration:none">Xóa</a>
+                                <a href="~/MH_CapNhatMatHang.cshtml?maMh=@mh.maHang" style="float:right;padding-right:10px;color:green;text-decoration:none;">Cập nhật</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table><br />
+            <div style="font-weight:bold">@thongke1</div>
+            <div style="font-weight:bold">@thongke2</div>
+            <div style="font-weight:bold">@thongkehandung</div>
+        </fieldset>
+    </div>
+</body>
+</html>

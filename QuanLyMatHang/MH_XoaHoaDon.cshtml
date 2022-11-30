@@ -1,0 +1,55 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    HOADON hd1 = new HOADON();
+    List<MATHANG> dsmh = new List<MATHANG>();
+    MATHANG mh = new MATHANG();
+    if (IsPost)
+    {
+        var HoaDon = Request["maHD"];
+        hd1 = XL_HOADON.DocHoaDon(HoaDon);
+        dsmh = XL_MATHANG.DocDanhSachMatHang(dsmh);
+        mh = XL_MATHANG.DocMatHang(hd1.maMatHang);
+        if (hd1.loaiHoaDon == "Nhập")
+        {
+            mh.soLuongHang = mh.soLuongHang - hd1.soLuongHang;
+            XL_MATHANG.SuaSoLuongHang(mh);
+        }
+        if (hd1.loaiHoaDon == "Xuất")
+        {
+            mh.soLuongHang = mh.soLuongHang + hd1.soLuongHang;
+            XL_MATHANG.SuaSoLuongHang(mh);
+        }
+        XL_HOADON.XoaHoaDon(HoaDon);
+        Response.Redirect("MH_TimKiemHoaDon.cshtml");
+    }
+    else
+    {
+        var maHd = Request["maHD"];
+        hd1 = XL_HOADON.DocHoaDon(maHd);
+    }
+ }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:lightseagreen;font-weight:bold">Xóa hóa đơn</legend>
+            <form action="~/MH_XoaHoaDon.cshtml" method="post">
+                Mã hóa đơn cần xóa:
+                <input type="text" name="maHD" value="@hd1.maHoaDon"><br />
+                <input type="submit" value="Xóa mặt hàng" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+            <form action="~/MH_TimKiemHoaDon.cshtml">
+                <input type="submit" value="Trở về" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

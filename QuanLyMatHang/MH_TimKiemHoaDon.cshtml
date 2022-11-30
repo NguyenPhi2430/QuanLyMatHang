@@ -1,0 +1,137 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    List<HOADON> DsHD = null;
+    var tukhoa = Request["tuKhoa"];
+    DateTime? namBatDau = null;
+    DateTime? namKetThuc = null;
+    string namBatDauHTML = string.Empty;
+    string namKetThucHTML = string.Empty;
+    if (IsPost)
+    {
+        if (Request.Form["Search"] == "mahoadon")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangMaHoaDon(tukhoa);
+        }
+        if (Request.Form["Search"] == "mahang")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangMaHang(tukhoa);
+        }
+        if (Request.Form["Search"] == "tenhang")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangTenHang(tukhoa);
+        }
+        if (Request.Form["Search"] == "congtySX")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangCongTy(tukhoa);
+        }
+        if (Request.Form["Search"] == "loaihang")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangLoaiHang(tukhoa);
+        }
+        if (Request.Form["Search"] == "loaihoadon")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangLoaiHoaDon(tukhoa);
+        }
+        if (Request.Form["Search"] == "tatca")
+        {
+            DsHD = XL_HOADON.TimKiemHoaDonBangTatCa(tukhoa);
+        }
+        if (!String.IsNullOrEmpty(Request["namSXBD"]) && !String.IsNullOrEmpty(Request["namSXKT"]))
+        {
+
+            string namBD = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXBD"]);
+            string namKT = XL_DATETIMEFORMAT.ThemThoiGian(Request["namSXKT"]);
+            namBatDau = XL_DATETIMEFORMAT.FormatStringToDateTime(namBD);
+            DateTime nBDHTML = (DateTime)namBatDau;
+            namBatDauHTML = nBDHTML.ToString("MM/dd/yyyy");
+            namKetThuc = XL_DATETIMEFORMAT.FormatStringToDateTime(namKT);
+            DateTime nKTHTML = (DateTime)namKetThuc;
+            namKetThucHTML = nKTHTML.ToString("MM/dd/yyyy");
+            DsHD = XL_HOADON.TimKiemMatHangBangNgayTao(namBatDau, namKetThuc, DsHD);
+        }
+    }
+    }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    FILEPATH = C:\\Users\\admin\\source\\repos\\QuanLyMatHang\\hoadon.txt
+    <h1 style="text-align:center;color:darkcyan">Quản lý hóa đơn</h1>
+    <div style="text-align:center"><span style="color:red">>>>>> </span><a href="~/MH_TimKiemMatHang.cshtml">Quản lý mặt hàng</a></div>
+    <div>
+        <fieldset>
+            <legend style="color:lightseagreen;font-weight:bold">Tìm kiếm hóa đơn</legend>
+            <form action="~/MH_TimKiemHoaDon.cshtml" method="post">
+                Tìm kiếm theo:
+                <select name="Search">
+                    <option value="tatca">Tất cả</option>
+                    <option value="mahoadon">Mã hóa đơn</option>
+                    <option value="mahang">Mã mặt hàng</option>
+                    <option value="tenhang">Tên mặt hàng</option>
+                    <option value="congtySX">Công ty sản xuất</option>
+                    <option value="loaihang">Loại mặt hàng</option>
+                    <option value="loaihoadon">Loại hóa đơn</option>
+                </select><br />
+                Từ khóa:
+                <input type="text" name="tuKhoa" value="@tukhoa" /><br />
+                Tìm kiếm theo ngày tạo:
+                <input type="datetime" name="namSXBD" placeholder="Từ ngày" value="@namBatDauHTML" />
+                <input type="datetime" name="namSXKT" placeholder="Đến ngày" value="@namKetThucHTML" /><br />
+                <input type="submit" value="Tìm kiếm" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" /><br />
+            </form><br />
+            <form action="~/MH_ThemHoaDon.cshtml">
+                <input type="submit" value="Thêm hóa đơn" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;" />
+            </form>
+        </fieldset>
+    </div>
+    <br />
+    <div>
+        <fieldset>
+            <legend style="color:lightseagreen;font-weight:bold">Danh sách hóa đơn</legend>
+            <table border="1" rules="cols" style="width:100%">
+                <tr>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Mã hóa đơn</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Mã MH</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Tên MH</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Công ty SX</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Loại hàng</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Ngày tạo</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Đơn giá</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Số lượng hàng</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Tổng tiền</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Loại hóa đơn</th>
+                    <th style="background-color:mediumpurple;color:white;padding:5px;">Tác vụ</th>
+                </tr>
+                @if (DsHD != null)
+                {
+                    foreach (var hd in DsHD)
+                    {
+                        <tr>
+                            <td style="text-align:center">@hd.maHoaDon</td>
+                            <td style="text-align:center">@hd.maMatHang</td>
+                            <td style="text-align:center">@hd.tenMatHang</td>
+                            <td style="text-align:center">@hd.congTySX</td>
+                            <td style="text-align:center">@hd.loaiHang</td>
+                            <td style="text-align:center">@hd.ngayTao.ToShortDateString()</td>
+                            <td style="text-align:center">@hd.donGia</td>
+                            <td style="text-align:center">@hd.soLuongHang</td>
+                            <td style="text-align:center">@hd.tongGia</td>
+                            <td style="text-align:center">@hd.loaiHoaDon</td>
+                            <td>
+                                <a href="~/MH_XoaHoaDon.cshtml?maHd=@hd.maHoaDon" style="padding-left:10px;color:red;text-decoration:none">Xóa</a>
+                                <a href="~/MH_CapNhatHoaDon.cshtml?maHd=@hd.maHoaDon" style="float:right;padding-right:10px;color:green;text-decoration:none">Cập nhật</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </fieldset>
+    </div>
+</body>
+</html>

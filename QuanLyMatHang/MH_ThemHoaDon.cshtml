@@ -1,0 +1,72 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    HOADON hd2 = new HOADON();
+    List<HOADON> dshd = new List<HOADON>();
+    List<MATHANG> dsmh = new List<MATHANG>();
+    MATHANG mh = new MATHANG();
+    if (IsPost)
+    {
+
+        hd2.maHoaDon = Request["maHD"];
+        hd2.maHoaDon = XL_HOADON.KiemTraHopLe(hd2.maHoaDon);
+        dsmh = XL_MATHANG.DocDanhSachMatHang(dsmh);
+        hd2.maMatHang = Request["maMH"];
+        hd2.ngayTao = DateTime.Parse(Request["ngayTao"]);
+        hd2.soLuongHang = int.Parse(Request["soluongMH"]);
+        if (Request.Form["Search"] == "1")
+        {
+            hd2.loaiHoaDon = "Nhập";
+            dsmh = XL_MATHANG.DocDanhSachMatHang(dsmh);
+            mh = XL_MATHANG.DocMatHang(hd2.maMatHang);
+            mh.soLuongHang = mh.soLuongHang + hd2.soLuongHang;
+            XL_MATHANG.SuaSoLuongHang(mh);
+        }
+        else
+        {
+            hd2.loaiHoaDon = "Xuất";
+            dsmh = XL_MATHANG.DocDanhSachMatHang(dsmh);
+            mh = XL_MATHANG.DocMatHang(hd2.maMatHang);
+            mh.soLuongHang = mh.soLuongHang - hd2.soLuongHang;
+            XL_MATHANG.SuaSoLuongHang(mh);
+        }
+        XL_HOADON.ThemHoaDon(hd2, hd2.maMatHang);
+
+        Response.Redirect("MH_TimKiemHoaDon.cshtml");
+    }
+ }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:lightseagreen;font-weight:bold">Thêm hóa đơn</legend>
+            <form action="~/MH_ThemHoaDon.cshtml" method="post">
+                Mã hóa đơn:
+                <input type="text" name="maHD" style="margin-right:25px" />
+                Mã mặt hàng:
+                <input type="text" name="maMH" /><br />
+                <span style="font-weight:bold">Ngày tạo*:</span>
+                <input type="datetime" name="ngayTao" placeholder="mm/dd/yyyy" required style="margin-right:23px" />
+                <span style="font-weight:bold">Số lượng hàng*:</span>
+                <input type="number" name="soluongMH" required /><br />
+                Loại hóa đơn:
+                <select name="Search">
+                    <option value="1">Nhập</option>
+                    <option value="2">Xuất</option>
+                </select><br />
+                <input type="submit" value="Thêm hóa đơn" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+            <form action="~/MH_TimKiemHoaDon.cshtml">
+                <input type="submit" value="Trở về" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

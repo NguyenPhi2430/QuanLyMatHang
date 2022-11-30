@@ -1,0 +1,140 @@
+﻿@using _QuanLyMatHang
+@{
+    Layout = null;
+    HOADON hd2 = new HOADON();
+    HOADON hdOld = new HOADON();
+    List<HOADON> dshd = new List<HOADON>();
+    List<MATHANG> dsmh = new List<MATHANG>();
+    MATHANG mh = new MATHANG();
+    MATHANG mhNew = new MATHANG();
+    int soLuongCanThemHayBot = 0;
+    if (IsPost)
+    {
+
+        hd2.maHoaDon = Request["maHD"];
+        dshd = XL_HOADON.DocDanhSachHoaDon(dshd);
+        hdOld = XL_HOADON.DocHoaDon(hd2.maHoaDon);
+        dsmh = XL_MATHANG.DocDanhSachMatHang(dsmh);
+        mh = XL_MATHANG.DocMatHang(hdOld.maMatHang);
+        hd2.maMatHang = Request["maMH"];
+        mhNew = XL_MATHANG.DocMatHang(hd2.maMatHang);
+        hd2.ngayTao = DateTime.Parse(Request["ngayTao"]);
+        hd2.soLuongHang = int.Parse(Request["soluongMH"]);
+        if (Request.Form["luaChon"] == "1")
+        {
+            hd2.loaiHoaDon = "Nhập";
+            if(hd2.maMatHang == mh.maHang)
+            {
+                if (hdOld.loaiHoaDon == "Nhập")
+                {
+                    soLuongCanThemHayBot = hd2.soLuongHang - hdOld.soLuongHang;
+                    mh.soLuongHang = mh.soLuongHang + soLuongCanThemHayBot;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                }
+                else
+                {
+                    soLuongCanThemHayBot = hd2.soLuongHang + hdOld.soLuongHang;
+                    mh.soLuongHang = mh.soLuongHang + soLuongCanThemHayBot;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                }
+            }
+            if (hd2.maMatHang != mh.maHang)
+            {
+                if (hdOld.loaiHoaDon == "Nhập")
+                {
+                    mh.soLuongHang = mh.soLuongHang - hdOld.soLuongHang;
+                    mhNew.soLuongHang = mhNew.soLuongHang + hd2.soLuongHang;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                    XL_MATHANG.SuaSoLuongHang(mhNew);
+                }
+                else
+                {
+                    mh.soLuongHang = mh.soLuongHang + hdOld.soLuongHang;
+                    mhNew.soLuongHang = mhNew.soLuongHang + hd2.soLuongHang;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                    XL_MATHANG.SuaSoLuongHang(mhNew);
+                }
+            }
+        }
+        if(Request.Form["luaChon"] == "2")
+        {
+            hd2.loaiHoaDon = "Xuất";
+            if (hd2.maMatHang == mh.maHang)
+            {
+                if (hdOld.loaiHoaDon == "Nhập")
+                {
+                    soLuongCanThemHayBot = hd2.soLuongHang + hdOld.soLuongHang;
+                    mh.soLuongHang = mh.soLuongHang - soLuongCanThemHayBot;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                }
+                else
+                {
+                    soLuongCanThemHayBot = hd2.soLuongHang - hdOld.soLuongHang;
+                    mh.soLuongHang = mh.soLuongHang - soLuongCanThemHayBot;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                }
+            }
+            if (hd2.maMatHang != mh.maHang)
+            {
+                if (hdOld.loaiHoaDon == "Nhập")
+                {
+                    mh.soLuongHang = mh.soLuongHang - hdOld.soLuongHang;
+                    mhNew.soLuongHang = mhNew.soLuongHang - hd2.soLuongHang;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                    XL_MATHANG.SuaSoLuongHang(mhNew);
+                }
+                else
+                {
+                    mh.soLuongHang = mh.soLuongHang + hdOld.soLuongHang;
+                    mhNew.soLuongHang = mhNew.soLuongHang - hd2.soLuongHang;
+                    XL_MATHANG.SuaSoLuongHang(mh);
+                    XL_MATHANG.SuaSoLuongHang(mhNew);
+                }
+            }
+        }
+
+        XL_HOADON.SuaHoaDon(hd2);
+
+        Response.Redirect("MH_TimKiemHoaDon.cshtml");
+    }
+    else
+    {
+        var maHd = Request["maHD"];
+        hd2 = XL_HOADON.DocHoaDon(maHd);
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend style="color:lightseagreen;font-weight:bold">Cập nhật hóa đơn</legend>
+            <form action="~/MH_CapNhatHoaDon.cshtml" method="post">
+                Mã hóa đơn:
+                <input type="text" name="maHD" value="@hd2.maHoaDon" readonly="readonly" style="margin-right:25px" />
+                Mã mặt hàng:
+                <input type="text" name="maMH" value="@hd2.maMatHang" /><br />
+                Ngày tạo*:
+                <input type="datetime" name="ngayTao" placeholder="mm/dd/yyyy" value="@hd2.ngayTao" required style="margin-right:4px" />
+                Loại hóa đơn:
+                <select name="luaChon">
+                    <option value="1">Nhập</option>
+                    <option value="2">Xuất</option>
+                </select><br />
+                <span style="font-weight:bold">Số lượng hàng*:</span>
+                <input type="number" name="soluongMH" value="@hd2.soLuongHang" required /><br />
+                <input type="submit" value="Cập nhật" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+            <form action="~/MH_TimKiemHoaDon.cshtml">
+                <input type="submit" value="Trở về" style="background-color:mediumpurple;border:none;color:white;height:25px;border-radius:5px;margin-top:10px;" />
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>
